@@ -1,0 +1,106 @@
+{
+  "scope": "Injected faults on Safdarjung NOAA observations with the same July\u2013December 2025 dates at three seeds; not field validation",
+  "evaluation_status": "Development rerun: Safdarjung July\u2013December 2025 and these seeds had already been examined. Peer observations from the same dates had also been reviewed.",
+  "seeds": [
+    42,
+    3101,
+    2026
+  ],
+  "runs": 3,
+  "events": 120,
+  "event_recall": 1.0,
+  "incremental_event_recall": 0.9916666666666667,
+  "new_event_detections_vs_baseline": 119,
+  "confusion_matrix_pooled_nominal": {
+    "tp": 227,
+    "fp": 97,
+    "fn": 97,
+    "tn": 3869
+  },
+  "point_metrics_pooled_nominal": {
+    "accuracy": 0.9547785547785548,
+    "always_normal_accuracy": 0.9244755244755245,
+    "precision": 0.7006172839506173,
+    "recall": 0.7006172839506173,
+    "f1": 0.7006172839506173
+  },
+  "baseline_alert_rate_per_run": 0.017433751743375175,
+  "per_fault_type": [
+    {
+      "fault_type": "communication_gap",
+      "events": 12,
+      "detected": 12,
+      "new_detections_vs_baseline": 12,
+      "incremental_event_recall": 1.0
+    },
+    {
+      "fault_type": "humidity_spike",
+      "events": 12,
+      "detected": 12,
+      "new_detections_vs_baseline": 12,
+      "incremental_event_recall": 1.0
+    },
+    {
+      "fault_type": "invalid_humidity",
+      "events": 12,
+      "detected": 12,
+      "new_detections_vs_baseline": 11,
+      "incremental_event_recall": 0.9166666666666666
+    },
+    {
+      "fault_type": "missing_humidity",
+      "events": 12,
+      "detected": 12,
+      "new_detections_vs_baseline": 12,
+      "incremental_event_recall": 1.0
+    },
+    {
+      "fault_type": "multivariate_corruption",
+      "events": 12,
+      "detected": 12,
+      "new_detections_vs_baseline": 12,
+      "incremental_event_recall": 1.0
+    },
+    {
+      "fault_type": "pressure_bias",
+      "events": 12,
+      "detected": 12,
+      "new_detections_vs_baseline": 12,
+      "incremental_event_recall": 1.0
+    },
+    {
+      "fault_type": "pressure_spike",
+      "events": 12,
+      "detected": 12,
+      "new_detections_vs_baseline": 12,
+      "incremental_event_recall": 1.0
+    },
+    {
+      "fault_type": "temperature_drift",
+      "events": 12,
+      "detected": 12,
+      "new_detections_vs_baseline": 12,
+      "incremental_event_recall": 1.0
+    },
+    {
+      "fault_type": "temperature_frozen",
+      "events": 12,
+      "detected": 12,
+      "new_detections_vs_baseline": 12,
+      "incremental_event_recall": 1.0
+    },
+    {
+      "fault_type": "temperature_spike",
+      "events": 12,
+      "detected": 12,
+      "new_detections_vs_baseline": 12,
+      "incremental_event_recall": 1.0
+    }
+  ],
+  "cautions": [
+    "Unmodified NOAA rows are only nominal negatives, not verified healthy sensors.",
+    "Repeated seeds reuse the same station and dates; observations are not independent.",
+    "NOAA relative humidity at these stations is derived, so humidity-sensor faults cannot be field-validated.",
+    "These metrics apply to the fixed injected severities, not all possible faults."
+  ]
+}

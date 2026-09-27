@@ -1,0 +1,106 @@
+{
+  "scope": "injected_faults_on_observed_NOAA_weather; NOT verified field accuracy",
+  "nominal_negative_assumption": "Unmodified NOAA readings are treated as negative only for this benchmark; some could contain unknown faults or extreme weather.",
+  "seed": 2026,
+  "model_retrained": false,
+  "confusion_matrix_nominal": {
+    "tp": 37,
+    "fp": 26,
+    "fn": 71,
+    "tn": 1296
+  },
+  "point_metrics_nominal": {
+    "accuracy": 0.9321678321678322,
+    "precision": 0.5873015873015873,
+    "recall": 0.3425925925925926,
+    "f1": 0.4327485380116959
+  },
+  "baseline_alerts": 23,
+  "baseline_alert_rate": 0.01603905160390516,
+  "trial_non_injected_alerts": 26,
+  "trial_non_injected_alert_rate": 0.019667170953101363,
+  "trial_new_alerts_outside_injected_rows": 5,
+  "note": "Point accuracy is strongly affected by the many nominal negatives. Event recall and alert burden are also reported.",
+  "events": {
+    "total": 40,
+    "detected": 33,
+    "event_recall": 0.825,
+    "new_detections_vs_baseline": 32,
+    "incremental_event_recall": 0.8,
+    "median_first_new_alert_delay_hours": 0.0
+  },
+  "fault_types": [
+    {
+      "fault_type": "communication_gap",
+      "events": 4,
+      "detected": 4,
+      "new_detections_vs_baseline": 4,
+      "median_new_delay_hours": 3.0
+    },
+    {
+      "fault_type": "humidity_spike",
+      "events": 4,
+      "detected": 4,
+      "new_detections_vs_baseline": 4,
+      "median_new_delay_hours": 0.0
+    },
+    {
+      "fault_type": "invalid_humidity",
+      "events": 4,
+      "detected": 4,
+      "new_detections_vs_baseline": 3,
+      "median_new_delay_hours": 0.0
+    },
+    {
+      "fault_type": "missing_humidity",
+      "events": 4,
+      "detected": 4,
+      "new_detections_vs_baseline": 4,
+      "median_new_delay_hours": 0.0
+    },
+    {
+      "fault_type": "multivariate_corruption",
+      "events": 4,
+      "detected": 4,
+      "new_detections_vs_baseline": 4,
+      "median_new_delay_hours": 0.0
+    },
+    {
+      "fault_type": "pressure_bias",
+      "events": 4,
+      "detected": 1,
+      "new_detections_vs_baseline": 1,
+      "median_new_delay_hours": 0.0
+    },
+    {
+      "fault_type": "pressure_spike",
+      "events": 4,
+      "detected": 4,
+      "new_detections_vs_baseline": 4,
+      "median_new_delay_hours": 0.0
+    },
+    {
+      "fault_type": "temperature_drift",
+      "events": 4,
+      "detected": 0,
+      "new_detections_vs_baseline": 0,
+      "median_new_delay_hours": null
+    },
+    {
+      "fault_type": "temperature_frozen",
+      "events": 4,
+      "detected": 4,
+      "new_detections_vs_baseline": 4,
+      "median_new_delay_hours": 12.0
+    },
+    {
+      "fault_type": "temperature_spike",
+      "events": 4,
+      "detected": 4,
+      "new_detections_vs_baseline": 4,
+      "median_new_delay_hours": 0.0
+    }
+  ],
+  "model_path": "noaa_safdarjung/skyguard_noaa_v2.joblib",
+  "source_replay_path": "noaa_safdarjung/held_out.csv"
+}

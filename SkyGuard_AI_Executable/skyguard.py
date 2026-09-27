@@ -12,6 +12,7 @@ import joblib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import IsolationForest
+from sklearn.linear_model import HuberRegressor
 
 SENSORS = ("temperature", "pressure", "humidity")
 BOUNDS = {"temperature": (-60, 60), "pressure": (850, 1100), "humidity": (0, 100)}
@@ -49,6 +50,9 @@ class Station:
     last_time: object = None
     repeats: dict = field(default_factory=lambda: {s: 0 for s in SENSORS})
     recent_alerts: deque = field(default_factory=lambda: deque(maxlen=144))
+    last_rule_sensors: set = field(default_factory=set)
+    peer_history: dict = field(default_factory=dict)
+    peer_alert_timestamps: deque = field(default_factory=lambda: deque(maxlen=144))
 
 
 def vector(row, history, scales):
@@ -87,13 +91,13 @@ def read_csv(path):
     return rows
 
 
-def clean_vectors(rows, scales):
+def clean_vectors(rows, scales, interval_minutes=10):
     histories = {}
     features = []
     for row in rows:
         state = histories.setdefault(row["station_id"], Station())
         valid = all(row[s] is not None and BOUNDS[s][0] <= row[s] <= BOUNDS[s][1] for s in SENSORS)
-        contiguous = state.last_time is None or (row["timestamp"] - state.last_time) <= pd.Timedelta(minutes=20)
+        contiguous = state.last_time is None or (row["timestamp"] - state.last_time) <= pd.Timedelta(minutes=1.5*interval_minutes)
         if not contiguous:
             state.history.clear()
         if valid:
@@ -107,7 +111,39 @@ def clean_vectors(rows, scales):
     return np.asarray(features, dtype=float).reshape(-1, len(FEATURES))
 
 
-def train(train_path, calibration_path, model_path):
+def contiguous_changes(rows, interval_minutes):
+    """Use only valid, consecutive observations from the same station."""
+    previous = {}
+    changes = []
+    for row in rows:
+        old = previous.get(row["station_id"])
+        if old is not None and row["timestamp"]-old["timestamp"] == pd.Timedelta(minutes=interval_minutes):
+            if all(row[s] is not None and old[s] is not None and
+                   BOUNDS[s][0] <= row[s] <= BOUNDS[s][1] and
+                   BOUNDS[s][0] <= old[s] <= BOUNDS[s][1] for s in SENSORS):
+                changes.append([row[s]-old[s] for s in SENSORS])
+        previous[row["station_id"]] = row
+    return np.asarray(changes, dtype=float).reshape(-1, len(SENSORS))
+
+
+def calibrate_quality_rules(training, calibration, interval_minutes):
+    """Fit coupling on training; set conservative cutoffs on later reference data."""
+    train_changes = contiguous_changes(training, interval_minutes)
+    cal_changes = contiguous_changes(calibration, interval_minutes)
+    if min(len(train_changes), len(cal_changes)) < 50:
+        raise ValueError("need >=50 contiguous changes to calibrate quality rules")
+    coupling = HuberRegressor().fit(train_changes[:, [0]], train_changes[:, 2])
+    rh_residual = cal_changes[:, 2] - coupling.predict(cal_changes[:, [0]])
+    return {"pressure_step_hpa": float(np.quantile(abs(cal_changes[:, 1]), .999)),
+            "temperature_humidity_residual_pp": float(np.quantile(abs(rh_residual), .999)),
+            "humidity_delta_per_temperature_delta": float(coupling.coef_[0]),
+            "humidity_delta_intercept": float(coupling.intercept_),
+            "calibration_pairs": len(cal_changes), "reference_quantile": .999}
+
+
+def train(train_path, calibration_path, model_path, interval_minutes=10):
+    if interval_minutes <= 0:
+        raise ValueError("interval_minutes must be positive")
     training = read_csv(train_path)
     calibration = read_csv(calibration_path)
     if not training or not calibration:
@@ -120,12 +156,12 @@ def train(train_path, calibration_path, model_path):
         prev = {}
         for row in training:
             old = prev.get(row["station_id"])
-            if old and row[sensor] is not None and old[sensor] is not None and (row["timestamp"]-old["timestamp"]) <= pd.Timedelta(minutes=20):
+            if old and row[sensor] is not None and old[sensor] is not None and (row["timestamp"]-old["timestamp"]) <= pd.Timedelta(minutes=1.5*interval_minutes):
                 diffs.append(abs(row[sensor] - old[sensor]))
             prev[row["station_id"]] = row
         scales[sensor] = max(float(np.percentile(diffs, 90)) if diffs else 0, {"temperature": .15, "pressure": .08, "humidity": .8}[sensor])
-    x_train = clean_vectors(training, scales)
-    x_cal = clean_vectors(calibration, scales)
+    x_train = clean_vectors(training, scales, interval_minutes)
+    x_cal = clean_vectors(calibration, scales, interval_minutes)
     if min(len(x_train), len(x_cal)) < 50:
         raise ValueError("need >=50 contiguous clean feature rows in each split")
     model = IsolationForest(n_estimators=120, max_samples=min(256, len(x_train)),
@@ -133,18 +169,20 @@ def train(train_path, calibration_path, model_path):
     # Quantile is chosen exclusively on subsequent clean reference observations.
     scores = -model.score_samples(x_cal)
     bundle = {"model": model, "scales": scales, "threshold": float(np.quantile(scores, .999)),
-              "features": FEATURES, "calibration_rows": len(x_cal), "version": 1}
+              "features": FEATURES, "calibration_rows": len(x_cal), "version": 1,
+              "interval_minutes": interval_minutes,
+              "quality_rules": calibrate_quality_rules(training, calibration, interval_minutes)}
     joblib.dump(bundle, model_path)
     print(json.dumps({"model": str(model_path), "training_rows": len(x_train),
                       "calibration_rows": len(x_cal), "reference_score_threshold": bundle["threshold"]}, indent=2))
 
 
 class Detector:
-    def __init__(self, bundle, interval_minutes=10):
+    def __init__(self, bundle, interval_minutes=None):
         if bundle.get("features") != FEATURES or bundle.get("version") != 1:
             raise ValueError("incompatible model bundle")
         self.bundle = bundle
-        self.interval = pd.Timedelta(minutes=interval_minutes)
+        self.interval = pd.Timedelta(minutes=interval_minutes or bundle.get("interval_minutes", 10))
         self.stations = {}
 
     def process(self, raw, peers=None):
@@ -191,6 +229,47 @@ class Detector:
                     if z > 8 and score is not None and score > threshold:
                         reasons.append(f"{s}:abrupt_change")
                         sensors.append(s)
+        # Independent checks: a high model score is not required for an alert.
+        # Coupling flags inconsistent changes but cannot identify which sensor
+        # is faulty, especially when humidity is derived from temperature.
+        rule_sensors = []
+        rules = self.bundle.get("quality_rules")
+        if rules and previous is not None and ts-previous["timestamp"] == self.interval:
+            if all(row[s] is not None and previous[s] is not None and
+                   BOUNDS[s][0] <= row[s] <= BOUNDS[s][1] and
+                   BOUNDS[s][0] <= previous[s] <= BOUNDS[s][1] for s in SENSORS):
+                p_change = row["pressure"]-previous["pressure"]
+                if abs(p_change) > rules["pressure_step_hpa"]:
+                    reasons.append("pressure:unusual_step")
+                    rule_sensors.append("pressure")
+                t_change = row["temperature"]-previous["temperature"]
+                h_change = row["humidity"]-previous["humidity"]
+                expected_h_change = (rules["humidity_delta_per_temperature_delta"]*t_change +
+                                     rules["humidity_delta_intercept"])
+                if abs(h_change-expected_h_change) > rules["temperature_humidity_residual_pp"]:
+                    reasons.append("temperature_humidity:inconsistent_change")
+                    rule_sensors.extend(["temperature", "humidity"])
+                # A one-reading spike often returns to the prior trajectory on
+                # the next sample. Report that return as context, not a second
+                # incident, if the two-step net change fits the reference.
+                if len(state.history) >= 2 and state.last_rule_sensors:
+                    before_spike = state.history[-2]
+                    if ts-before_spike["timestamp"] == 2*self.interval:
+                        if "pressure" in rule_sensors and "pressure" in state.last_rule_sensors:
+                            if abs(row["pressure"]-before_spike["pressure"]) <= rules["pressure_step_hpa"]:
+                                rule_sensors.remove("pressure")
+                                reasons.remove("pressure:unusual_step")
+                                reasons.append("pressure:return_after_previous_alert")
+                        if ("temperature" in rule_sensors and
+                                {"temperature", "humidity"} <= state.last_rule_sensors):
+                            net_t = row["temperature"]-before_spike["temperature"]
+                            net_h = row["humidity"]-before_spike["humidity"]
+                            net_expected = (rules["humidity_delta_per_temperature_delta"]*net_t +
+                                            2*rules["humidity_delta_intercept"])
+                            if abs(net_h-net_expected) <= rules["temperature_humidity_residual_pp"]:
+                                rule_sensors = [s for s in rule_sensors if s not in ("temperature", "humidity")]
+                                reasons.remove("temperature_humidity:inconsistent_change")
+                                reasons.append("temperature_humidity:return_after_previous_alert")
         # Optional peer observations are a separate input; only comparable readings count.
         peer_support = []
         if peers:
@@ -199,6 +278,45 @@ class Detector:
                 values = [v for v in values if v is not None]
                 if row[s] is not None and len(values) >= 2 and abs(row[s]-float(np.median(values))) <= 3*self.bundle["scales"][s]:
                     peer_support.append(s)
+        # Compare the change in target-minus-peer over a full 24-hour cycle.
+        # Require an identified, same-time peer and the paired prior readings;
+        # un-timestamped peers are only eligible for the older review cue.
+        peer_rule_sensors = []
+        peer_rule = self.bundle.get("peer_drift_rule")
+        current_peer = None
+        if peer_rule and row["station_id"] == peer_rule["target_station_id"] and peers:
+            for item in peers:
+                if not isinstance(item, dict) or item.get("station_id") != peer_rule["peer_station_id"]:
+                    continue
+                try:
+                    candidate = normalize(item)
+                except (ValueError, KeyError, TypeError):
+                    continue
+                if candidate["timestamp"] == ts and all(
+                        candidate[s] is not None and BOUNDS[s][0] <= candidate[s] <= BOUNDS[s][1]
+                        for s in SENSORS):
+                    current_peer = candidate
+                    break
+            lag = pd.Timedelta(minutes=self.interval.total_seconds()/60*peer_rule["lag_readings"])
+            old_target = next((h for h in reversed(state.history)
+                               if h["timestamp"] == ts-lag), None)
+            old_peer = next((h for h in reversed(state.peer_history.get(peer_rule["peer_station_id"], ()))
+                             if h["timestamp"] == ts-lag), None)
+            # An alerting reading is an untrusted reference. Comparing to it
+            # again 24 hours later would echo the same incident as a new alert.
+            if (current_peer and old_target and old_peer and not gap and
+                    old_target["timestamp"] not in state.peer_alert_timestamps):
+                for s, cutoff in peer_rule["offset_change_cutoffs"].items():
+                    if row[s] is not None and BOUNDS[s][0] <= row[s] <= BOUNDS[s][1]:
+                        divergence = (row[s]-current_peer[s])-(old_target[s]-old_peer[s])
+                        if abs(divergence) > cutoff:
+                            peer_rule_sensors.append(s)
+                            reasons.append(f"{s}:24h_peer_divergence")
+        sensors.extend(peer_rule_sensors)
+        if rule_sensors and all(s in peer_support for s in rule_sensors):
+            reasons.append("peer_corroborated_unusual_change")
+            rule_sensors.clear()
+        sensors.extend(rule_sensors)
         hard = gap or any(":missing" in reason or ":outside" in reason or ":frozen" in reason for reason in reasons)
         large = [s for s, z in residuals.items() if z > 8]
         weather = len(large) >= 2 and all(s in peer_support for s in large) and not hard
@@ -206,7 +324,7 @@ class Detector:
             reasons.append("peer_corroborated_weather_change")
         elif len(large) >= 2 and not hard:
             reasons.append("coherent_change_unverified")
-        fault = hard or (score is not None and score > threshold and not weather)
+        fault = hard or bool(rule_sensors) or bool(peer_rule_sensors) or (score is not None and score > threshold and not weather)
         classification = "normal"
         if fault:
             if gap:
@@ -219,6 +337,12 @@ class Detector:
                 classification = "frozen_sensor"
             elif any(":abrupt_change" in r for r in reasons):
                 classification = "spike_or_shift"
+            elif "temperature_humidity:inconsistent_change" in reasons and rule_sensors:
+                classification = "cross_sensor_inconsistency"
+            elif "pressure:unusual_step" in reasons and rule_sensors:
+                classification = "spike_or_shift"
+            elif peer_rule_sensors:
+                classification = "peer_divergence_review"
             else:
                 classification = "unusual_pattern"
         elif weather:
@@ -231,6 +355,9 @@ class Detector:
             for s in affected:
                 suggestions[s] = round(float(np.median([h[s] for h in list(state.history)[-6:]])), 3)
         state.recent_alerts.append(int(fault))
+        if fault and current_peer is not None:
+            state.peer_alert_timestamps.append(ts)
+        state.last_rule_sensors = set(rule_sensors) if fault else set()
         rate = sum(state.recent_alerts)/len(state.recent_alerts)
         health = "needs_inspection" if len(state.recent_alerts) >= 12 and rate >= .25 else "monitor" if fault else "healthy"
         severity = "high" if hard else "medium" if fault else "info"
@@ -247,6 +374,8 @@ class Detector:
             state.history.append(row)
         else:
             state.history.clear()
+        if current_peer is not None:
+            state.peer_history.setdefault(peer_rule["peer_station_id"], deque(maxlen=144)).append(current_peer)
         state.last_time = ts
         return result
 
@@ -280,10 +409,27 @@ def make_demo(destination):
     print(f"Wrote train.csv, calibration.csv, replay.csv to {destination}")
 
 
-def replay(detector, path, output):
+def peer_lookup(path):
+    if path is None:
+        return {}
+    data = pd.read_csv(path)
+    required = {"timestamp", "station_id", *SENSORS}
+    if not required.issubset(data.columns):
+        raise ValueError(f"Peer CSV must contain {sorted(required)}")
+    data["timestamp"] = pd.to_datetime(data.timestamp, utc=True).map(lambda ts: ts.isoformat())
+    if data.timestamp.duplicated().any():
+        raise ValueError("Peer CSV must have one observation per timestamp")
+    return dict(zip(data.timestamp, data.to_dict("records")))
+
+
+def replay(detector, path, output, peer_path=None):
+    if detector.bundle.get("peer_drift_rule") and peer_path is None:
+        raise ValueError("This paired-station model requires --peer-input for replay")
+    peers = peer_lookup(peer_path)
     records = []
     for raw in pd.read_csv(path).to_dict("records"):
-        out = detector.process(raw)
+        ts = parse_time(raw["timestamp"]).isoformat()
+        out = detector.process(raw, [peers[ts]] if ts in peers else None)
         if "injected_fault" in raw:
             out["injected_fault"] = bool(raw["injected_fault"])
         records.append(out)
@@ -309,21 +455,24 @@ def main():
     fit.add_argument("--train", required=True)
     fit.add_argument("--calibration", required=True)
     fit.add_argument("--model", default="skyguard.joblib")
+    fit.add_argument("--interval-minutes", type=float, default=10,
+                     help="Expected reporting cadence (e.g. 60 for hourly observations)")
     run = commands.add_parser("replay")
     run.add_argument("--input", required=True)
     run.add_argument("--model", default="skyguard.joblib")
     run.add_argument("--output", default="alerts.csv")
+    run.add_argument("--peer-input", type=Path, help="Same-time peer observations for a calibrated paired-station check")
     live = commands.add_parser("stream")
     live.add_argument("--model", default="skyguard.joblib")
     args = parser.parse_args()
     if args.command == "generate-demo":
         make_demo(args.out)
     elif args.command == "train":
-        train(args.train, args.calibration, args.model)
+        train(args.train, args.calibration, args.model, args.interval_minutes)
     else:
         detector = Detector(joblib.load(args.model))  # load only your own trusted model file
         if args.command == "replay":
-            replay(detector, args.input, args.output)
+            replay(detector, args.input, args.output, args.peer_input)
         else:
             for line in sys.stdin:
                 if line.strip():

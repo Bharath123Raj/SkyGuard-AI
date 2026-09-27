@@ -1,0 +1,18 @@
+{
+  "source": "noaa_2026/safdarjung/alerts.csv",
+  "observations": 2069,
+  "baseline_alerts": 89,
+  "baseline_alert_rate": 0.0430159497341711,
+  "by_category": {
+    "isolation_forest_pattern": 20,
+    "scheduled_report_gap": 18,
+    "peer_change_disagreement": 18,
+    "repeated_100_percent_humidity": 14,
+    "incomplete_or_outside_range": 10,
+    "calibrated_change_check": 8,
+    "repeated_value_other": 1
+  },
+  "objective_data_quality_rows": 10,
+  "proven_sensor_faults": 0,
+  "note": "Categories describe evidence for review, not confirmed fault labels. Unmodified NOAA rows are nominal negatives only in the injection benchmark. Missing values are objective data-quality problems; a report gap does not prove a communication hardware failure. Repeated 100% relative humidity may be genuine saturation."
+}

@@ -1,0 +1,90 @@
+timestamp,station_id,classification,review_category,temperature,pressure,humidity,reasons,anomaly_score
+2026-01-04T00:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,10.0,1019.1,100.0,['communication_gap'],
+2026-01-09T00:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,5.0,1022.0,100.0,['communication_gap'],
+2026-01-12T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,15.7,1023.6,43.0,['unusual_multivariate_temporal_pattern'],0.62687
+2026-01-12T09:00:00+00:00,INI0000VIDD,missing_data,incomplete_or_outside_range,19.6,,41.0,['pressure:missing_or_nonfinite'],
+2026-01-13T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,17.6,1022.1,49.0,['unusual_multivariate_temporal_pattern'],0.65008
+2026-01-17T09:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,24.0,1012.8,53.0,['unusual_multivariate_temporal_pattern'],0.6372
+2026-01-19T00:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,8.2,1014.5,100.0,['communication_gap'],
+2026-01-21T00:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,9.0,1017.5,100.0,['communication_gap'],
+2026-01-22T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,22.5,1017.5,49.0,['unusual_multivariate_temporal_pattern'],0.63525
+2026-01-27T09:00:00+00:00,INI0000VIDD,spike_or_shift,calibrated_change_check,15.2,1016.4,100.0,['pressure:unusual_step'],0.52997
+2026-01-29T00:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,12.0,1019.6,100.0,['communication_gap'],
+2026-01-30T00:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,9.0,1019.9,100.0,['communication_gap'],
+2026-02-06T12:00:00+00:00,INI0000VIDD,cross_sensor_inconsistency,calibrated_change_check,22.2,1016.4,46.0,['temperature_humidity:inconsistent_change'],0.53695
+2026-02-10T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,24.5,1017.0,42.0,['unusual_multivariate_temporal_pattern'],0.6332
+2026-02-16T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,27.2,1014.4,34.0,['unusual_multivariate_temporal_pattern'],0.64359
+2026-02-19T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,25.0,1018.0,46.0,['unusual_multivariate_temporal_pattern'],0.62395
+2026-02-20T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,25.7,1019.9,53.0,['unusual_multivariate_temporal_pattern'],0.61914
+2026-02-22T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,26.7,1010.6,41.0,['unusual_multivariate_temporal_pattern'],0.63414
+2026-02-23T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,27.6,1010.7,41.0,['unusual_multivariate_temporal_pattern'],0.63899
+2026-02-24T21:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,14.4,1012.7,93.0,['communication_gap'],
+2026-02-28T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,31.0,1007.5,26.0,['unusual_multivariate_temporal_pattern'],0.63273
+2026-03-04T21:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,21.2,1009.8,81.0,['communication_gap'],
+2026-03-07T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,32.6,1011.7,47.0,['unusual_multivariate_temporal_pattern'],0.62215
+2026-03-08T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,33.0,1012.2,38.0,['unusual_multivariate_temporal_pattern'],0.62398
+2026-03-11T00:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,19.0,1012.9,94.0,['communication_gap'],
+2026-03-12T06:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,33.5,1008.3,21.0,['unusual_multivariate_temporal_pattern'],0.61708
+2026-03-13T00:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,21.5,1007.9,85.0,['communication_gap'],
+2026-03-14T00:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,19.5,1007.6,82.0,['communication_gap'],
+2026-03-18T15:00:00+00:00,INI0000VIDD,spike_or_shift,calibrated_change_check,19.0,1014.2,100.0,"['unusual_multivariate_temporal_pattern', 'pressure:unusual_step']",0.68867
+2026-03-19T06:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,25.0,1013.3,62.0,['communication_gap'],
+2026-03-20T00:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,18.0,1009.9,100.0,['communication_gap'],
+2026-03-24T00:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,17.7,1010.6,96.0,['communication_gap'],
+2026-04-01T09:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,32.6,1008.6,37.0,['communication_gap'],
+2026-04-01T15:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,26.2,1008.8,70.0,['communication_gap'],
+2026-04-03T15:00:00+00:00,INI0000VIDD,spike_or_shift,calibrated_change_check,23.4,1011.1,75.0,['pressure:unusual_step'],0.61318
+2026-04-07T18:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,18.4,1006.6,100.0,['temperature:24h_peer_divergence'],0.48101
+2026-04-17T15:00:00+00:00,INI0000VIDD,spike_or_shift,calibrated_change_check,21.4,1009.4,100.0,"['unusual_multivariate_temporal_pattern', 'pressure:unusual_step']",0.6936
+2026-04-17T18:00:00+00:00,INI0000VIDD,cross_sensor_inconsistency,calibrated_change_check,27.0,1006.0,53.0,['temperature_humidity:inconsistent_change'],0.57916
+2026-04-20T12:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,31.0,1001.9,30.0,['temperature:24h_peer_divergence'],0.53364
+2026-04-22T00:00:00+00:00,INI0000VIDD,invalid_reading,incomplete_or_outside_range,15.1,1003.6,111.0,"['humidity:outside_physical_range', 'unusual_multivariate_temporal_pattern', 'temperature:24h_peer_divergence']",0.63964
+2026-04-23T12:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,39.8,1000.5,22.0,['pressure:24h_peer_divergence'],0.4878
+2026-04-28T18:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,24.0,1000.4,86.0,"['unusual_multivariate_temporal_pattern', 'temperature:24h_peer_divergence']",0.62356
+2026-04-29T12:00:00+00:00,INI0000VIDD,invalid_reading,incomplete_or_outside_range,19.6,998.4,104.0,"['humidity:outside_physical_range', 'unusual_multivariate_temporal_pattern', 'temperature:24h_peer_divergence']",0.68305
+2026-05-03T21:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,21.4,1006.2,91.0,['unusual_multivariate_temporal_pattern'],0.64143
+2026-05-06T06:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,24.8,1007.6,65.0,['temperature:24h_peer_divergence'],0.47573
+2026-05-08T12:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,34.8,1004.5,39.0,['temperature:24h_peer_divergence'],0.47772
+2026-05-13T15:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,25.0,1000.8,83.0,['unusual_multivariate_temporal_pattern'],0.66857
+2026-05-13T21:00:00+00:00,INI0000VIDD,spike_or_shift,peer_change_disagreement,25.4,1098.9,72.0,"['pressure:unusual_step', 'pressure:24h_peer_divergence']",0.5719
+2026-05-21T09:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,43.0,997.9,21.0,['communication_gap'],
+2026-05-22T18:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,29.6,1001.8,53.0,['temperature:24h_peer_divergence'],0.5165
+2026-05-23T00:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,18.0,1002.6,98.0,"['unusual_multivariate_temporal_pattern', 'temperature:24h_peer_divergence']",0.65854
+2026-05-23T03:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,34.0,1004.5,37.0,['unusual_multivariate_temporal_pattern'],0.63199
+2026-05-25T06:00:00+00:00,INI0000VIDD,communication_gap,scheduled_report_gap,39.8,1000.4,30.0,['communication_gap'],
+2026-05-28T15:00:00+00:00,INI0000VIDD,cross_sensor_inconsistency,calibrated_change_check,31.4,1003.5,40.0,"['pressure:unusual_step', 'temperature_humidity:inconsistent_change']",0.56704
+2026-05-30T12:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,26.6,1005.1,65.0,['unusual_multivariate_temporal_pattern'],0.61641
+2026-06-01T06:00:00+00:00,INI0000VIDD,missing_data,incomplete_or_outside_range,,,,"['temperature:missing_or_nonfinite', 'pressure:missing_or_nonfinite', 'humidity:missing_or_nonfinite']",
+2026-06-04T09:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,38.2,997.0,42.0,['temperature:24h_peer_divergence'],0.48109
+2026-06-04T12:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,29.2,996.5,68.0,['pressure:24h_peer_divergence'],0.58082
+2026-06-08T00:00:00+00:00,INI0000VIDD,invalid_reading,incomplete_or_outside_range,19.6,999.2,112.0,"['humidity:outside_physical_range', 'unusual_multivariate_temporal_pattern', 'temperature:24h_peer_divergence']",0.65646
+2026-06-09T21:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,26.6,996.7,80.0,['unusual_multivariate_temporal_pattern'],0.65608
+2026-06-11T18:00:00+00:00,INI0000VIDD,spike_or_shift,calibrated_change_check,31.2,1003.0,66.0,['pressure:unusual_step'],0.53128
+2026-06-11T21:00:00+00:00,INI0000VIDD,unusual_pattern,isolation_forest_pattern,24.6,1003.6,99.0,['unusual_multivariate_temporal_pattern'],0.63916
+2026-06-13T18:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,25.1,1002.2,96.0,['temperature:24h_peer_divergence'],0.59703
+2026-06-15T09:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,37.2,1000.8,39.0,['temperature:24h_peer_divergence'],0.45728
+2026-06-19T15:00:00+00:00,INI0000VIDD,missing_data,incomplete_or_outside_range,,,,"['temperature:missing_or_nonfinite', 'pressure:missing_or_nonfinite', 'humidity:missing_or_nonfinite']",
+2026-06-23T00:00:00+00:00,INI0000VIDD,invalid_reading,incomplete_or_outside_range,18.4,1000.3,122.0,"['humidity:outside_physical_range', 'unusual_multivariate_temporal_pattern', 'temperature:24h_peer_divergence']",0.65524
+2026-06-24T12:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,26.8,996.1,80.0,"['unusual_multivariate_temporal_pattern', 'temperature:24h_peer_divergence']",0.6346
+2026-06-28T12:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,40.0,993.5,44.0,['temperature:24h_peer_divergence'],0.53522
+2026-07-05T06:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,38.4,996.9,55.0,['temperature:24h_peer_divergence'],0.49408
+2026-07-05T21:00:00+00:00,INI0000VIDD,missing_data,incomplete_or_outside_range,,,,"['temperature:missing_or_nonfinite', 'pressure:missing_or_nonfinite', 'humidity:missing_or_nonfinite']",
+2026-07-09T00:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,26.0,995.6,100.0,['humidity:frozen_6_readings'],0.42174
+2026-07-09T03:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,25.0,997.8,100.0,['humidity:frozen_6_readings'],0.44501
+2026-07-09T06:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,26.0,998.6,100.0,['humidity:frozen_6_readings'],0.45906
+2026-07-09T09:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,26.0,997.1,100.0,['humidity:frozen_6_readings'],0.45332
+2026-07-12T12:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,37.0,993.6,50.0,['pressure:24h_peer_divergence'],0.47682
+2026-07-29T00:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,26.0,998.9,100.0,['humidity:frozen_6_readings'],0.42807
+2026-08-05T06:00:00+00:00,INI0000VIDD,peer_divergence_review,peer_change_disagreement,27.0,999.4,100.0,['temperature:24h_peer_divergence'],0.44865
+2026-08-07T12:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,27.0,997.9,100.0,['humidity:frozen_6_readings'],0.43601
+2026-08-07T15:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,26.0,999.1,100.0,['humidity:frozen_6_readings'],0.41644
+2026-08-07T18:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,26.0,1000.0,100.0,['humidity:frozen_6_readings'],0.41627
+2026-08-07T21:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,25.0,998.9,100.0,['humidity:frozen_6_readings'],0.41473
+2026-08-08T00:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,26.0,998.9,100.0,['humidity:frozen_6_readings'],0.42421
+2026-08-08T03:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,28.0,1000.0,100.0,['humidity:frozen_6_readings'],0.43482
+2026-08-14T00:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_value_other,29.0,1000.2,94.0,['temperature:frozen_6_readings'],0.4225
+2026-08-25T15:00:00+00:00,INI0000VIDD,missing_data,incomplete_or_outside_range,28.0,,94.0,['pressure:missing_or_nonfinite'],
+2026-09-05T03:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,26.0,1006.9,100.0,"['temperature:frozen_6_readings', 'humidity:frozen_6_readings']",0.45308
+2026-09-05T06:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,26.0,1007.9,100.0,"['temperature:frozen_6_readings', 'humidity:frozen_6_readings']",0.48347
+2026-09-05T09:00:00+00:00,INI0000VIDD,frozen_sensor,repeated_100_percent_humidity,27.0,1005.4,100.0,['humidity:frozen_6_readings'],0.48568
+2026-09-21T21:00:00+00:00,INI0000VIDD,missing_data,incomplete_or_outside_range,,,,"['temperature:missing_or_nonfinite', 'pressure:missing_or_nonfinite', 'humidity:missing_or_nonfinite']",

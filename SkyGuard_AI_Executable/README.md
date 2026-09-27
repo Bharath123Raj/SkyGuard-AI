@@ -1,6 +1,18 @@
 # SkyGuard AI — executable AWS anomaly detector
 
-SkyGuard monitors **temperature (°C), atmospheric pressure (hPa), relative humidity (%)** per Automatic Weather Station. It combines a clean-history Isolation Forest with physical-range, missing-reading, exact-repeat and communication-gap checks. It emits a JSON evidence record for every observation, including an alert, tentative fault type, severity, sensor health and optional reversible suggested values. It supports an optional peer-station check and a Streamlit dashboard.
+For the included observed Indian station data and runnable replay, start with
+[NOAA_DATA.md](NOAA_DATA.md). For future authorized IMD AWS imports, see
+[REAL_DATA.md](REAL_DATA.md).
+
+SkyGuard monitors **temperature (°C), atmospheric pressure (hPa), relative humidity (%)** per Automatic Weather Station. It combines a clean-history Isolation Forest with calibrated pressure-step and temperature–humidity change checks, plus physical-range, missing-reading, exact-repeat and communication-gap checks. It emits a JSON evidence record for every observation, including an alert, tentative fault type, severity, sensor health and optional reversible suggested values. It supports an optional peer-station check and a Streamlit dashboard.
+
+The paired-station development and the later, frozen-model 2026 evaluation are
+documented in [noaa_2026/PEER_DIVERGENCE_EVAL.md](noaa_2026/PEER_DIVERGENCE_EVAL.md).
+For a short walkthrough using the observed and injected 2026 replays, see
+[DEMO_GUIDE.md](DEMO_GUIDE.md).
+For GitHub and Streamlit Community Cloud, see
+[DEPLOY_GITHUB.md](DEPLOY_GITHUB.md). The hosted app defaults to observed
+2026 Safdarjung records; the injected replay is an explicitly labeled option.
 
 ## Quick start
 
@@ -37,7 +49,7 @@ Stream mode writes one JSON result per line. It maintains bounded in-memory stat
 
 ## How decisions are made
 
-The Isolation Forest learns normal 10-minute temporal changes from the training split. A held-out clean calibration split determines the 99.9th percentile reference score cutoff. The alert policy also checks missing/nonfinite values, broad physical limits, a fixed value for six readings, and communication gaps. For valid observations with enough history, an unusually high model score triggers an alert. Two nearby peers with comparable values for each changed sensor can support a plausible meteorological event; this is a simple optional corroboration rule, not a spatially trained model. No peer input means there is no proof that a sudden coherent change is real weather.
+The Isolation Forest learns temporal changes from the training split. A later candidate clean calibration split determines the 99.9th percentile reference score cutoff. New models also fit a robust temperature–humidity change relation on training data and calibrate independent pressure-step and cross-sensor residual cutoffs on that same later reference split. Those checks can alert below the Isolation Forest cutoff. A cross-sensor discrepancy alone cannot identify which of the two measurements is faulty. The alert policy also checks missing/nonfinite values, broad physical limits, a fixed value for six readings, and communication gaps. The optional 24-hour paired-station check compares change in target-minus-peer values using identified, same-time peer observations; it flags disagreement for review rather than proving which station failed. Two nearby peers with comparable values for each changed sensor can support a plausible meteorological event; this is a simple optional corroboration rule, not a spatially trained model. No peer input means there is no proof that a sudden coherent change is real weather.
 
 `evidence_strength` is a bounded heuristic derived from reasons and change magnitude; **it is not a calibrated confidence probability**. `suggested_values` are medians of the last six local valid readings, appropriate as provisional placeholders for isolated faults, not for fast-changing weather. Keep originals and require review before using an estimate downstream. `sensor_health` moves to `needs_inspection` when >=25% of at least 12 recent observations alerted. This is a maintenance cue, not a validated remaining-life prediction. The rule `frozen_6_readings` assumes a 10-minute cadence; quiet physical sensors can naturally repeat with low-precision readings. Tune to actual instrument resolution.
 

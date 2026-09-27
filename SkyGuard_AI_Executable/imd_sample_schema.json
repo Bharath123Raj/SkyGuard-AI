@@ -1,0 +1,16 @@
+[
+  {
+    "ID": "B48970CA",
+    "CALL_SIGN": "NDL",
+    "DISTRICT": "NEW_DELHI",
+    "STATE": "DELHI",
+    "STATION": "LODI ROAD",
+    "DATE": "2024-06-06",
+    "TIME": "07:00:00",
+    "CURR_TEMP": "40.8",
+    "RH": "20",
+    "MSLP": "1003.0",
+    "Latitude": "28.5885",
+    "Longitude": "77.2224"
+  }
+]

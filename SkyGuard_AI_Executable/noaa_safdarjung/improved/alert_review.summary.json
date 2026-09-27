@@ -1,0 +1,12 @@
+{
+  "alerts": 23,
+  "classifications": {
+    "unusual_pattern": 9,
+    "communication_gap": 9,
+    "spike_or_shift": 3,
+    "missing_data": 2
+  },
+  "peer_same_time_available": 23,
+  "unusual_pattern_with_correlated_peer_temp_and_rh": 9,
+  "confirmed_fault_labels": 0
+}

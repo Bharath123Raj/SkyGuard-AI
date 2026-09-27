@@ -1,0 +1,32 @@
+{
+  "source": "NOAA Global Historical Climatology Network hourly (GHCNh) version 1",
+  "station_id": "INI0000VIDD",
+  "station_name": "Safdarjung, India",
+  "station_latitude": 28.5845,
+  "station_longitude": 77.2058,
+  "retrieved_utc_date": "2026-09-27",
+  "source_urls": {
+    "2024": "https://www.ncei.noaa.gov/oa/global-historical-climatology-network/hourly/access/by-year/2024/psv/GHCNh_INI0000VIDD_2024.psv",
+    "2025": "https://www.ncei.noaa.gov/oa/global-historical-climatology-network/hourly/access/by-year/2025/psv/GHCNh_INI0000VIDD_2025.psv"
+  },
+  "sha256": {
+    "2024": "be6747094767cff119572ef617d9622d2efcf2b079e2ae41c4ebcef313cc611c",
+    "2025": "c0b8e35fac6bd6aa5376764fabda365d58b59bc4e9ab32e83581665e23d71ec6"
+  },
+  "data_units": {
+    "temperature": "C",
+    "pressure": "hPa sea_level_pressure",
+    "humidity": "whole percent, derived from temperature and dew point for these source 223 rows"
+  },
+  "note": "NOAA GHCNh observations are not verified IMD AWS sensor readings. Derived relative humidity does not test a humidity sensor.",
+  "review_peer": {
+    "station_id": "INI0000VIDP",
+    "station_name": "Indira Gandhi International Airport, Delhi",
+    "latitude": 28.5665,
+    "longitude": 77.1031,
+    "year": 2025,
+    "source_url": "https://www.ncei.noaa.gov/oa/global-historical-climatology-network/hourly/access/by-year/2025/psv/GHCNh_INI0000VIDP_2025.psv",
+    "sha256": "4d98d3f22ad24bf4c03a50e5355e675458bbb0b52cb60a1fbf51e3c408474a87",
+    "usage": "same-time context for alert review; not verified fault labels"
+  }
+}

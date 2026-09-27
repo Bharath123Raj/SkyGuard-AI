@@ -1,0 +1,11 @@
+{
+  "source": "NOAA GHCNh version 1 (2026)",
+  "station_id": "INI0000VIDP",
+  "station_name": "Indira Gandhi International Airport, Delhi",
+  "peer_station_id": "INI0000VIDD",
+  "source_url": "https://www.ncei.noaa.gov/oa/global-historical-climatology-network/hourly/access/by-year/2026/psv/GHCNh_INI0000VIDP_2026.psv",
+  "source_sha256": "d3bbc5d8b44a0c38a8221a11c41c632cf4b524f4cf4987960a0f470699bd55fd",
+  "retrieved_utc_date": "2026-09-27",
+  "model_training": "Safdarjung 2024; January\u2013June 2025 calibration; 2026 data not used to adjust model or cutoffs",
+  "relative_humidity": "derived from temperature and dew point in this NOAA source; not independent humidity sensor data"
+}

@@ -1,0 +1,36 @@
+{
+  "dataset": "NOAA GHCNh",
+  "station_id": "INI0000VIDP",
+  "input_files": [
+    "noaa_safdarjung/peer_raw/GHCNh_INI0000VIDP_2025.psv"
+  ],
+  "interval_minutes": 180,
+  "train_end_exclusive_utc": "2025-01-01",
+  "calibration_end_exclusive_utc": "2025-07-01",
+  "off_grid_excluded": 14089,
+  "duplicate_timestamps_excluded": 0,
+  "relative_humidity_derived_rows": 2881,
+  "splits": {
+    "train": {
+      "raw_on_grid": 0,
+      "written": 0,
+      "incomplete_or_outside_range": 0,
+      "noaa_qc_flagged": 0,
+      "rh_derived": 0
+    },
+    "calibration": {
+      "raw_on_grid": 1442,
+      "written": 1400,
+      "incomplete_or_outside_range": 14,
+      "noaa_qc_flagged": 28,
+      "rh_derived": 1442
+    },
+    "held_out": {
+      "raw_on_grid": 1439,
+      "written": 1439,
+      "incomplete_or_outside_range": 9,
+      "noaa_qc_flagged": 1,
+      "rh_derived": 1439
+    }
+  }
+}

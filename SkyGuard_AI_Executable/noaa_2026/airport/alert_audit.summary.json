@@ -1,0 +1,17 @@
+{
+  "source": "noaa_2026/airport/alerts.csv",
+  "observations": 2125,
+  "baseline_alerts": 99,
+  "baseline_alert_rate": 0.046588235294117646,
+  "by_category": {
+    "incomplete_or_outside_range": 56,
+    "peer_change_disagreement": 19,
+    "scheduled_report_gap": 8,
+    "calibrated_change_check": 7,
+    "isolation_forest_pattern": 7,
+    "repeated_value_other": 2
+  },
+  "objective_data_quality_rows": 56,
+  "proven_sensor_faults": 0,
+  "note": "Categories describe evidence for review, not confirmed fault labels. Unmodified NOAA rows are nominal negatives only in the injection benchmark. Missing values are objective data-quality problems; a report gap does not prove a communication hardware failure. Repeated 100% relative humidity may be genuine saturation."
+}
