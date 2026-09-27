@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 
 parser = argparse.ArgumentParser(add_help=False)
-parser.add_argument("--data", default="alerts.csv")
+parser.add_argument("--data", default=str(Path(__file__).resolve().parent / "alerts.csv"))
 args, _ = parser.parse_known_args()
 
 st.set_page_config(page_title="SkyGuard AI", page_icon="🌦️", layout="wide")
